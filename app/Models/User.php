@@ -30,6 +30,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'fullname',
         'username',
         'email',
+        'password',
         'avatar_path'
     ];
 

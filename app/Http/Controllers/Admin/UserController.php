@@ -1,0 +1,129 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Models\User;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
+
+class UserController extends Controller
+{
+    public function index()
+    {
+        $users = User::with('roles')
+            ->where('deleted_at', null)
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'roles' => $user->roles->pluck('name'), // Mengembalikan array role
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'users' => $users
+        ], 200);
+    }
+
+    public function show($id)
+    {
+        $user = User::with('roles')
+            ->where('deleted_at', null)
+            ->find($id);
+
+        return response()->json([
+            'user' => [
+                'fullname' => $user->fullname,
+                'username' => $user->username,
+                'email' => $user->email,
+                'roles' => $user->roles->pluck('name'), // Mengembalikan array role
+            ]
+        ], 200);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $this->validate($request, [
+            'fullname' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            // 'password' => 'required|string|min:8',
+            'roles' => 'required|array|min:1',
+        ]);
+
+        $pwGenerate = Str::random(10);
+        $usernameGenerate = explode('@', $validated['email']);
+
+        $user = User::create([
+            'fullname' => $validated['fullname'],
+            'username' => $usernameGenerate[0], // Ambil username sebagai username default. Sebaiknya diganti dengan username yang aman.
+            'email' => $validated['email'],
+            'password' => Hash::make($pwGenerate),
+        ]);
+
+        foreach ($validated['roles'] as $role) {
+            $user->assignRole($role); // Mengasumsikan $role adalah string nama role
+        }
+
+        $data = [
+            'fullname' => $user->fullname,
+            'email' => $user->email,
+            'username' => $user->username,
+            'password' => $pwGenerate, // Inisialisasi password secara acak. Sebaiknya diganti dengan password yang aman.
+            'roles' => $validated['roles'],
+        ];
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User created successfully',
+            'user' => $data
+        ], 201);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validated = $this->validate($request, [
+            'fullname' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+            'roles' => 'required|array|min:1',
+        ]);
+
+        $user = User::findOrFail($id);
+
+        $user->update([
+            'fullname' => $validated['fullname'],
+            'email' => $validated['email'],
+        ]);
+
+        $user->syncRoles($validated['roles']); // Hapus peran lama & tambahkan yang baru
+
+        $data = [
+            'fullname' => $user->fullname,
+            'email' => $user->email,
+            'roles' => $validated['roles'],
+        ];
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User updated successfully',
+            'user' => $data
+        ], 200);
+    }
+
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+        $user->syncRoles([]);
+        $user->deleted_at = date('Y-m-d H:i:s');
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User deleted successfully',
+        ], 200);
+    }
+}

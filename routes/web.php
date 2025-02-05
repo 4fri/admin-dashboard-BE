@@ -32,5 +32,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->group(['middleware' => 'auth'], function () use ($router) {
         $router->get('/profile', 'AuthController@profile');
         $router->post('/logout', 'AuthController@logout');
+
+        $router->group(['prefix' => 'users'], function () use ($router) {
+            $router->get('/', 'Admin\UserController@index');
+            $router->post('/', 'Admin\UserController@store');
+            $router->get('{id}', 'Admin\UserController@show');
+            $router->put('{id}', 'Admin\UserController@update');
+            $router->delete('{id}', 'Admin\UserController@destroy');
+            $router->get('{id}/show', 'Admin\UserController@show');
+        });
     });
 });
