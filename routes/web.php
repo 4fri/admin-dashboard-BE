@@ -22,9 +22,15 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->post('/login', 'AuthController@login');
+$router->group(['prefix' => 'api'], function () use ($router) {
+    $router->get('/', function () use ($router) {
+        return $router->app->version();
+    });
 
-$router->group(['middleware' => 'auth'], function () use ($router) {
-    $router->get('/profile', 'AuthController@profile');
-    $router->post('/logout', 'AuthController@logout');
+    $router->post('/login', 'AuthController@login');
+
+    $router->group(['middleware' => 'auth'], function () use ($router) {
+        $router->get('/profile', 'AuthController@profile');
+        $router->post('/logout', 'AuthController@logout');
+    });
 });
