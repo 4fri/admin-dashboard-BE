@@ -52,7 +52,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->group(['prefix' => 'permissions'], function () use ($router) {
             $router->get('/', 'Admin\PermissionController@index');
             $router->post('/', 'Admin\PermissionController@store');
-            $router->get('/{id}', 'Admin\PermissionController@show');
+            $router->get('/{id}/show', 'Admin\PermissionController@show');
             $router->put('/{id}', 'Admin\PermissionController@update');
             $router->delete('/{id}', 'Admin\PermissionController@destroy');
         });
