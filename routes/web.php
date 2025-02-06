@@ -30,7 +30,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('/login', 'AuthController@login');
 
     $router->group(['middleware' => 'auth'], function () use ($router) {
+        // $router->group(['middleware' => ['role:user|admin']], function () use ($router) {
         $router->get('/profile', 'AuthController@profile');
+        // });
         $router->post('/logout', 'AuthController@logout');
 
         $router->group(['prefix' => 'users'], function () use ($router) {
