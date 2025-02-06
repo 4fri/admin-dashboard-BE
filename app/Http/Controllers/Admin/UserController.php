@@ -58,30 +58,39 @@ class UserController extends Controller
         $pwGenerate = Str::random(10);
         $usernameGenerate = explode('@', $validated['email']);
 
-        $user = User::create([
-            'fullname' => $validated['fullname'],
-            'username' => $usernameGenerate[0], // Ambil username sebagai username default. Sebaiknya diganti dengan username yang aman.
-            'email' => $validated['email'],
-            'password' => Hash::make($pwGenerate),
-        ]);
 
-        foreach ($validated['roles'] as $role) {
-            $user->assignRole($role); // Mengasumsikan $role adalah string nama role
+        try {
+            //code...
+            $user = User::create([
+                'fullname' => $validated['fullname'],
+                'username' => $usernameGenerate[0], // Ambil username sebagai username default. Sebaiknya diganti dengan username yang aman.
+                'email' => $validated['email'],
+                'password' => Hash::make($pwGenerate),
+            ]);
+
+            foreach ($validated['roles'] as $role) {
+                $user->assignRole($role); // Mengasumsikan $role adalah string nama role
+            }
+
+            $data = [
+                'fullname' => $user->fullname,
+                'email' => $user->email,
+                'username' => $user->username,
+                'password' => $pwGenerate, // Inisialisasi password secara acak. Sebaiknya diganti dengan password yang aman.
+                'roles' => $validated['roles'],
+            ];
+
+            return response()->json([
+                'success' => true,
+                'message' => 'User created successfully',
+                'user' => $data
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User create failed'
+            ], 500);
         }
-
-        $data = [
-            'fullname' => $user->fullname,
-            'email' => $user->email,
-            'username' => $user->username,
-            'password' => $pwGenerate, // Inisialisasi password secara acak. Sebaiknya diganti dengan password yang aman.
-            'roles' => $validated['roles'],
-        ];
-
-        return response()->json([
-            'success' => true,
-            'message' => 'User created successfully',
-            'user' => $data
-        ], 201);
     }
 
     public function update(Request $request, $id)
@@ -94,36 +103,52 @@ class UserController extends Controller
 
         $user = User::findOrFail($id);
 
-        $user->update([
-            'fullname' => $validated['fullname'],
-            'email' => $validated['email'],
-        ]);
+        try {
+            //code...
+            $user->update([
+                'fullname' => $validated['fullname'],
+                'email' => $validated['email'],
+            ]);
 
-        $user->syncRoles($validated['roles']); // Hapus peran lama & tambahkan yang baru
+            $user->syncRoles($validated['roles']); // Hapus peran lama & tambahkan yang baru
 
-        $data = [
-            'fullname' => $user->fullname,
-            'email' => $user->email,
-            'roles' => $validated['roles'],
-        ];
+            $data = [
+                'fullname' => $user->fullname,
+                'email' => $user->email,
+                'roles' => $validated['roles'],
+            ];
 
-        return response()->json([
-            'success' => true,
-            'message' => 'User updated successfully',
-            'user' => $data
-        ], 200);
+            return response()->json([
+                'success' => true,
+                'message' => 'User updated successfully',
+                'user' => $data
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User update failed'
+            ], 500);
+        }
     }
 
     public function destroy($id)
     {
         $user = User::findOrFail($id);
-        $user->syncRoles([]);
-        $user->deleted_at = date('Y-m-d H:i:s');
-        $user->save();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'User deleted successfully',
-        ], 200);
+        try {
+            $user->syncRoles([]);
+            $user->deleted_at = date('Y-m-d H:i:s');
+            $user->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'User deleted successfully',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User delete failed'
+            ], 500);
+        }
     }
 }

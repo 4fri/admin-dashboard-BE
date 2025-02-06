@@ -36,10 +36,17 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->group(['prefix' => 'users'], function () use ($router) {
             $router->get('/', 'Admin\UserController@index');
             $router->post('/', 'Admin\UserController@store');
-            $router->get('{id}', 'Admin\UserController@show');
+            $router->get('{id}/show', 'Admin\UserController@show');
             $router->put('{id}', 'Admin\UserController@update');
             $router->delete('{id}', 'Admin\UserController@destroy');
-            $router->get('{id}/show', 'Admin\UserController@show');
+        });
+
+        $router->group(['prefix' => 'roles'], function () use ($router) {
+            $router->get('/', 'Admin\RoleController@index');        // Get all roles
+            $router->post('/', 'Admin\RoleController@store');       // Create new role
+            $router->get('/{id}/show', 'Admin\RoleController@show');     // Get role by ID
+            $router->put('/{id}', 'Admin\RoleController@update');   // Update role
+            $router->delete('/{id}', 'Admin\RoleController@destroy'); // Delete role
         });
     });
 });
