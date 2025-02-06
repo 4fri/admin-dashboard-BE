@@ -14,7 +14,7 @@ class RoleController extends Controller
 
         return response()->json([
             'success' => true,
-            'roles' => $roles
+            'result' => $roles
         ], 200);
     }
 
@@ -39,7 +39,7 @@ class RoleController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Role created successfully',
-                'role' => $role->name
+                'result' => $role->name
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
@@ -62,18 +62,12 @@ class RoleController extends Controller
 
         return response()->json([
             'success' => true,
-            'role' => $role
+            'result' => $role
         ], 200);
     }
 
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'required|string|max:255|unique:roles,name,' . $id,
-            'permissions' => 'array',
-            'permissions.*' => 'exists:permissions,id'
-        ]);
-
         $role = Role::find($id);
 
         if (!$role) {
@@ -82,6 +76,12 @@ class RoleController extends Controller
                 'message' => 'Role not found'
             ], 404);
         }
+
+        $this->validate($request, [
+            'name' => 'required|string|max:255|unique:roles,name,' . $id,
+            'permissions' => 'array',
+            'permissions.*' => 'exists:permissions,id'
+        ]);
 
         try {
             $role->update(['name' => $request->name]);
@@ -93,7 +93,7 @@ class RoleController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Role updated successfully',
-                'role' => $role->name
+                'result' => $role->name
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

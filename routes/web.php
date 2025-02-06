@@ -48,5 +48,13 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->put('/{id}', 'Admin\RoleController@update');   // Update role
             $router->delete('/{id}', 'Admin\RoleController@destroy'); // Delete role
         });
+
+        $router->group(['prefix' => 'permissions'], function () use ($router) {
+            $router->get('/', 'Admin\PermissionController@index');
+            $router->post('/', 'Admin\PermissionController@store');
+            $router->get('/{id}', 'Admin\PermissionController@show');
+            $router->put('/{id}', 'Admin\PermissionController@update');
+            $router->delete('/{id}', 'Admin\PermissionController@destroy');
+        });
     });
 });

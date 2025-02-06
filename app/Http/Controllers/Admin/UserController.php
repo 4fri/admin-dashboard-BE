@@ -26,7 +26,7 @@ class UserController extends Controller
 
         return response()->json([
             'success' => true,
-            'users' => $users
+            'result' => $users
         ], 200);
     }
 
@@ -36,13 +36,16 @@ class UserController extends Controller
             ->where('deleted_at', null)
             ->find($id);
 
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found'
+            ], 404);
+        }
+
         return response()->json([
-            'user' => [
-                'fullname' => $user->fullname,
-                'username' => $user->username,
-                'email' => $user->email,
-                'roles' => $user->roles->pluck('name'), // Mengembalikan array role
-            ]
+            'success' => true,
+            'result' => $user
         ], 200);
     }
 
@@ -83,7 +86,7 @@ class UserController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'User created successfully',
-                'user' => $data
+                'result' => $data
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
@@ -95,13 +98,20 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
+        $user = User::findOrFail($id);
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found'
+            ], 404);
+        }
+
         $validated = $this->validate($request, [
             'fullname' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $id,
             'roles' => 'required|array|min:1',
         ]);
-
-        $user = User::findOrFail($id);
 
         try {
             //code...
@@ -121,7 +131,7 @@ class UserController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'User updated successfully',
-                'user' => $data
+                'result' => $data
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -134,6 +144,13 @@ class UserController extends Controller
     public function destroy($id)
     {
         $user = User::findOrFail($id);
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found'
+            ], 404);
+        }
 
         try {
             $user->syncRoles([]);
