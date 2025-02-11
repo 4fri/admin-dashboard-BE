@@ -28,7 +28,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
                 $method = strtolower($resource->method);
 
                 if (method_exists($router, $method)) {
-                    $router->{$method}("{$prefix}/{$resource->url}", "{$resource->controller}@{$resource->function}");
+                    $router->{$method}("{$prefix}{$resource->url}", "{$resource->controller}@{$resource->function}");
                 }
             }
         } else {

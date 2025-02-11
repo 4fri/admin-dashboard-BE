@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -79,7 +80,8 @@ class UserController extends Controller
             ]);
 
             foreach ($validated['roles'] as $role) {
-                $user->assignRole($role); // Mengasumsikan $role adalah string nama role
+                $getRole = Role::find($role);
+                $user->assignRole($getRole->name); // Mengasumsikan $role adalah string nama role
             }
 
             $data = [
