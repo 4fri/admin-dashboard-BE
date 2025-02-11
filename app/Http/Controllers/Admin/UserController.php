@@ -54,6 +54,7 @@ class UserController extends Controller
     {
         $validated = $this->validate($request, [
             'fullname' => 'required|string|max:255',
+            'username' => 'required|unique:users,username',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => [
                 'required',
@@ -68,15 +69,13 @@ class UserController extends Controller
             'roles' => 'required|array|min:1',
         ]);
 
-        $usernameGenerate = explode('@', $validated['email']);
-
         try {
             //code...
             $user = User::create([
                 'fullname' => $validated['fullname'],
-                'username' => $usernameGenerate[0], // Ambil username sebagai username default. Sebaiknya diganti dengan username yang aman.
+                'username' => $validated['username'], // Ambil username sebagai username default. Sebaiknya diganti dengan username yang aman.
                 'email' => $validated['email'],
-                'password' => Hash::make($request->password),
+                'password' => Hash::make($validated['password']),
             ]);
 
             foreach ($validated['roles'] as $role) {
