@@ -18,7 +18,7 @@ class UserController extends Controller
             ->map(function ($user) {
                 return [
                     'id' => $user->id,
-                    'name' => $user->name,
+                    'fullname' => $user->fullname,
                     'email' => $user->email,
                     'roles' => $user->roles->pluck('name'), // Mengembalikan array role
                 ];
@@ -54,13 +54,20 @@ class UserController extends Controller
         $validated = $this->validate($request, [
             'fullname' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email',
-            // 'password' => 'required|string|min:8',
+            'password' => [
+                'required',
+                'string',
+                'min:8',          // Minimal 8 karakter
+                'confirmed',      // Harus cocok dengan password_confirmation
+                'regex:/[a-z]/',  // Harus mengandung huruf kecil
+                'regex:/[A-Z]/',  // Harus mengandung huruf besar
+                'regex:/[0-9]/',  // Harus mengandung angka
+                'regex:/[@$!%*?&#]/', // Harus mengandung simbol spesial
+            ],
             'roles' => 'required|array|min:1',
         ]);
 
-        $pwGenerate = Str::random(10);
         $usernameGenerate = explode('@', $validated['email']);
-
 
         try {
             //code...
@@ -68,7 +75,7 @@ class UserController extends Controller
                 'fullname' => $validated['fullname'],
                 'username' => $usernameGenerate[0], // Ambil username sebagai username default. Sebaiknya diganti dengan username yang aman.
                 'email' => $validated['email'],
-                'password' => Hash::make($pwGenerate),
+                'password' => Hash::make($request->password),
             ]);
 
             foreach ($validated['roles'] as $role) {
@@ -79,7 +86,7 @@ class UserController extends Controller
                 'fullname' => $user->fullname,
                 'email' => $user->email,
                 'username' => $user->username,
-                'password' => $pwGenerate, // Inisialisasi password secara acak. Sebaiknya diganti dengan password yang aman.
+                'password' => $request->password, // Inisialisasi password secara acak. Sebaiknya diganti dengan password yang aman.
                 'roles' => $validated['roles'],
             ];
 
@@ -109,7 +116,7 @@ class UserController extends Controller
 
         $validated = $this->validate($request, [
             'fullname' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+            // 'email' => 'required|string|email|max:255|unique:users,email,' . $id,
             'roles' => 'required|array|min:1',
         ]);
 
@@ -117,7 +124,7 @@ class UserController extends Controller
             //code...
             $user->update([
                 'fullname' => $validated['fullname'],
-                'email' => $validated['email'],
+                // 'email' => $validated['email'],
             ]);
 
             $user->syncRoles($validated['roles']); // Hapus peran lama & tambahkan yang baru
@@ -125,6 +132,8 @@ class UserController extends Controller
             $data = [
                 'fullname' => $user->fullname,
                 'email' => $user->email,
+                'username' => $user->username,
+                // 'password' => $request->password, // Inisialisasi password secara acak. Sebaiknya diganti dengan password yang aman.
                 'roles' => $validated['roles'],
             ];
 
