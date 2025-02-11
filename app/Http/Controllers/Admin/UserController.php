@@ -78,9 +78,13 @@ class UserController extends Controller
                 'password' => Hash::make($validated['password']),
             ]);
 
-            foreach ($validated['roles'] as $role) {
-                $getRole = Role::find($role);
-                $user->assignRole($getRole->name); // Mengasumsikan $role adalah string nama role
+            $defineRole = [];
+            foreach ($validated['roles'] as $roleId) {
+                $role = Role::find($roleId);
+                if ($role) {
+                    $user->assignRole($role);
+                }
+                $defineRole[] = $role->name;
             }
 
             $data = [
@@ -88,7 +92,7 @@ class UserController extends Controller
                 'email' => $user->email,
                 'username' => $user->username,
                 'password' => $request->password, // Inisialisasi password secara acak. Sebaiknya diganti dengan password yang aman.
-                'roles' => $validated['roles'],
+                'roles' => $defineRole,
             ];
 
             return response()->json([
@@ -126,9 +130,14 @@ class UserController extends Controller
             $user->save();
 
             $user->roles()->detach();
-            foreach ($validated['roles'] as $role) {
-                $getRole = Role::find($role);
-                $user->assignRole($getRole->name);
+
+            $defineRole = [];
+            foreach ($validated['roles'] as $roleId) {
+                $role = Role::find($roleId);
+                if ($role) {
+                    $user->assignRole($role);
+                }
+                $defineRole[] = $role->name;
             }
 
             return response()->json([
@@ -136,7 +145,7 @@ class UserController extends Controller
                 'message' => 'User updated successfully',
                 'result' => [
                     'fullname' => $user->fullname,
-                    'roles' => $validated['roles'],
+                    'roles' => $defineRole,
                 ]
             ], 200);
         } catch (\Exception $e) {
