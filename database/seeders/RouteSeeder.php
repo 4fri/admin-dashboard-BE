@@ -34,7 +34,15 @@ class RouteSeeder extends Seeder
             ['name' => 'permissions.show', 'method' => 'GET', 'prefix' => 'permissions', 'url' => '/{id}/show', 'controller' => 'Admin\PermissionController', 'function' => 'show'],
             ['name' => 'permissions.update', 'method' => 'PUT', 'prefix' => 'permissions', 'url' => '/{id}/update', 'controller' => 'Admin\PermissionController', 'function' => 'update'],
             ['name' => 'permissions.destroy', 'method' => 'DELETE', 'prefix' => 'permissions', 'url' => '/{id}/destroy', 'controller' => 'Admin\PermissionController', 'function' => 'destroy'],
+
+            // List Route
+            ['name' => 'routes.index', 'method' => 'GET', 'prefix' => 'routes', 'url' => '/', 'controller' => 'Admin\RouteController', 'function' => 'index'],
+            ['name' => 'routes.store', 'method' => 'POST', 'prefix' => 'routes', 'url' => '/store', 'controller' => 'Admin\RouteController', 'function' => 'store'],
+            ['name' => 'routes.show', 'method' => 'GET', 'prefix' => 'routes', 'url' => '/{id}/show', 'controller' => 'Admin\RouteController', 'function' => 'show'],
+            ['name' => 'routes.update', 'method' => 'PUT', 'prefix' => 'routes', 'url' => '/{id}/update', 'controller' => 'Admin\RouteController', 'function' => 'update'],
+            ['name' => 'routes.destroy', 'method' => 'DELETE', 'prefix' => 'routes', 'url' => '/{id}/destroy', 'controller' => 'Admin\RouteController', 'function' => 'destroy'],
         ];
+
 
         foreach ($routes as $route) {
             RouteModel::create([

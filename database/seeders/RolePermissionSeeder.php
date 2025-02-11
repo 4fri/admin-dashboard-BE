@@ -14,12 +14,37 @@ class RolePermissionSeeder extends Seeder
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
         $userRole = Role::firstOrCreate(['name' => 'user']);
 
-        // Buat izin
-        // $editArticles = Permission::firstOrCreate(['name' => 'edit articles']);
-        // $viewArticles = Permission::firstOrCreate(['name' => 'view articles']);
+        $permissions = [
+            'users.index',
+            'users.store',
+            'users.show',
+            'users.update',
+            'users.destroy',
+            'roles.index',
+            'roles.store',
+            'roles.show',
+            'roles.update',
+            'roles.destroy',
+            'permissions.index',
+            'permissions.store',
+            'permissions.show',
+            'permissions.update',
+            'permissions.destroy',
+            'routes.index',
+            'routes.store',
+            'routes.show',
+            'routes.update',
+            'routes.destroy',
+        ];
 
-        // // Berikan izin ke peran
-        // $adminRole->givePermissionTo([$editArticles, $viewArticles]);
-        // $userRole->givePermissionTo($viewArticles);
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission]);
+        }
+
+        $adminRole = Role::firstOrCreate(['name' => 'admin']);
+        $userRole = Role::firstOrCreate(['name' => 'user']);
+
+        $adminRole->givePermissionTo($permissions);
+        $userRole->givePermissionTo(['users.index']);
     }
 }

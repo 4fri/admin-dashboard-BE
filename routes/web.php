@@ -10,17 +10,14 @@ $router->get('/', function () use ($router) {
 });
 
 $router->group(['prefix' => 'api'], function () use ($router) {
-    $router->get('/', function () use ($router) {
-        return $router->app->version();
-    });
-
     $router->post('/login', 'AuthController@login');
 
     $router->group(['middleware' => 'auth'], function () use ($router) {
         $router->get('/profile', 'AuthController@profile');
         $router->post('/logout', 'AuthController@logout');
 
-        if (Schema::hasTable('routes')) {
+        // Pastikan tabel 'routes' ada sebelum melakukan query
+        if (Schema::hasTable('routes') && DB::table('routes')->exists()) {
             $resources = DB::table('routes')->get();
 
             foreach ($resources as $resource) {
@@ -28,18 +25,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
                 if (method_exists($router, $method)) {
                     $router->{$method}("/{$resource->prefix}{$resource->url}", [
-                        'middleware' => ['permission:' . $resource->name],
+                        'middleware' => "permission:{$resource->name}",
                         'uses' => "{$resource->controller}@{$resource->function}"
                     ]);
                 }
             }
-        } else {
-            // Log::warning("Table 'routes' tidak ditemukan.");
-
-            return response()->json([
-                'status' => 'error',
-                'message' => "Table 'routes' tidak ditemukan."
-            ], 404);
         }
     });
 });
