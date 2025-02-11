@@ -24,11 +24,13 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $resources = DB::table('routes')->get();
 
             foreach ($resources as $resource) {
-                $prefix = $resource->prefix;
                 $method = strtolower($resource->method);
 
                 if (method_exists($router, $method)) {
-                    $router->{$method}("{$prefix}{$resource->url}", "{$resource->controller}@{$resource->function}");
+                    $router->{$method}("/{$resource->prefix}{$resource->url}", [
+                        'middleware' => ['permission:' . $resource->name],
+                        'uses' => "{$resource->controller}@{$resource->function}"
+                    ]);
                 }
             }
         } else {
