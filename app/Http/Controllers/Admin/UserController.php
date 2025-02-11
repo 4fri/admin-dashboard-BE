@@ -107,8 +107,7 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
-
+        $user = User::find($id);
         if (!$user) {
             return response()->json([
                 'success' => false,
@@ -118,31 +117,28 @@ class UserController extends Controller
 
         $validated = $this->validate($request, [
             'fullname' => 'required|string|max:255',
-            // 'email' => 'required|string|email|max:255|unique:users,email,' . $id,
             'roles' => 'required|array|min:1',
         ]);
 
         try {
-            //code...
-            $user->update([
-                'fullname' => $validated['fullname'],
-                // 'email' => $validated['email'],
-            ]);
 
-            $user->syncRoles($validated['roles']); // Hapus peran lama & tambahkan yang baru
+            $user->fullname = $validated['fullname'];
 
-            $data = [
-                'fullname' => $user->fullname,
-                'email' => $user->email,
-                'username' => $user->username,
-                // 'password' => $request->password, // Inisialisasi password secara acak. Sebaiknya diganti dengan password yang aman.
-                'roles' => $validated['roles'],
-            ];
+            $user->save();
+
+            $user->roles()->detach();
+            foreach ($validated['roles'] as $role) {
+                $getRole = Role::find($role);
+                $user->assignRole($getRole->name);
+            }
 
             return response()->json([
                 'success' => true,
                 'message' => 'User updated successfully',
-                'result' => $data
+                'result' => [
+                    'fullname' => $user->fullname,
+                    'roles' => $validated['roles'],
+                ]
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -151,6 +147,7 @@ class UserController extends Controller
             ], 500);
         }
     }
+
 
     public function destroy($id)
     {
