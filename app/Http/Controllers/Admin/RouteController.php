@@ -96,6 +96,7 @@ class RouteController extends Controller
     public function update(Request $request, $id)
     {
         $route = RouteModel::find($id);
+        $permission = Permission::where('name', $route->name)->first();
 
         if (!$route) {
             return response()->json([
@@ -125,7 +126,6 @@ class RouteController extends Controller
         try {
             $route->update($parsData);
 
-            $permission = Permission::where('name', $validated['name'])->first();
             $permission->update([
                 'name' => $route->name,
             ]);
