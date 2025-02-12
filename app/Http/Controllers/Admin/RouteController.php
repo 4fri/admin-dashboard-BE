@@ -10,17 +10,22 @@ use Illuminate\Http\Request;
 class RouteController extends Controller
 {
     // Get all routes with pagination (10 per page)
-    public function index()
+    public function index(Request $request)
     {
-        $routes = RouteModel::paginate(10)->through(function ($route) {
-            return [
-                "id" => $route->id,
-                "name" => $route->name,
-                "url" => $route->url,
-                "method" => $route->method,
-                "prefix" => $route->prefix,
-            ];
-        });
+        $search = $request->search;
+
+        $routes = RouteModel::when($search, function ($query) use ($search) {
+            return $query->where('name', 'ILIKE', "%{$search}%");
+        })
+            ->paginate(10)->through(function ($route) {
+                return [
+                    "id" => $route->id,
+                    "name" => $route->name,
+                    "url" => $route->url,
+                    "method" => $route->method,
+                    "prefix" => $route->prefix,
+                ];
+            });
 
         return response()->json([
             'success' => true,
