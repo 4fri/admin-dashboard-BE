@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Faker\Factory as Faker;
 
 class UserSeeder extends Seeder
 {
@@ -40,6 +41,32 @@ class UserSeeder extends Seeder
 
         if (!$user->hasRole('user')) {
             $user->assignRole('user');
+        }
+
+        $faker = Faker::create();
+
+        // Buat 50 pengguna random
+        for ($i = 1; $i <= 50; $i++) {
+            $user = User::firstOrCreate(
+                ['email' => $faker->unique()->safeEmail],
+                [
+                    'fullname' => $faker->name,
+                    'username' => $faker->userName,
+                    'password' => Hash::make('password'),
+                    'avatar_path' => null
+                ]
+            );
+
+            // 5 User pertama menjadi admin, sisanya user
+            if ($i <= 5) {
+                if (!$user->hasRole('admin')) {
+                    $user->assignRole('admin');
+                }
+            } else {
+                if (!$user->hasRole('user')) {
+                    $user->assignRole('user');
+                }
+            }
         }
     }
 }
