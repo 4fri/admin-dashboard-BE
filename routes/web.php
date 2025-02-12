@@ -25,7 +25,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
                 if (method_exists($router, $method)) {
                     $router->{$method}("/{$resource->prefix}{$resource->url}", [
-                        'middleware' => "permission:{$resource->name}",
+                        'middleware' => "role_or_permission:{$resource->name}",
                         'uses' => "{$resource->controller}@{$resource->function}"
                     ]);
                 }

@@ -10,7 +10,7 @@ class PermissionController extends Controller
 {
     public function index()
     {
-        $permissions = Permission::get();
+        $permissions = Permission::paginate(10);
 
         return response()->json([
             'success' => true,

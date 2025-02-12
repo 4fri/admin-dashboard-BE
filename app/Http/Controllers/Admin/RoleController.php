@@ -10,7 +10,7 @@ class RoleController extends Controller
 {
     public function index()
     {
-        $roles = Role::withCount('permissions')->get();
+        $roles = Role::withCount('permissions')->paginate(10);
 
         return response()->json([
             'success' => true,

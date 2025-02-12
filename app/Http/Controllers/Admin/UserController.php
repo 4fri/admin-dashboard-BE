@@ -14,14 +14,14 @@ class UserController extends Controller
     public function index()
     {
         $users = User::with('roles')
-            ->where('deleted_at', null)
-            ->get()
-            ->map(function ($user) {
+            ->whereNull('deleted_at')
+            ->paginate(10)
+            ->through(function ($user) {
                 return [
                     'id' => $user->id,
                     'fullname' => $user->fullname,
                     'email' => $user->email,
-                    'roles' => $user->roles->pluck('name'), // Mengembalikan array role
+                    'roles' => $user->roles->pluck('name'),
                 ];
             });
 
@@ -110,7 +110,9 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        $user = User::find($id);
+        $user = User::with('roles')
+            ->find($id);
+
         if (!$user) {
             return response()->json([
                 'success' => false,
