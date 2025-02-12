@@ -1,26 +1,90 @@
-# Lumen PHP Framework
+# Menu dan Role Management API Template
 
-[![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
-[![Total Downloads](https://img.shields.io/packagist/dt/laravel/lumen-framework)](https://packagist.org/packages/laravel/lumen-framework)
-[![Latest Stable Version](https://img.shields.io/packagist/v/laravel/lumen-framework)](https://packagist.org/packages/laravel/lumen-framework)
-[![License](https://img.shields.io/packagist/l/laravel/lumen)](https://packagist.org/packages/laravel/lumen-framework)
+![Lumen](https://img.shields.io/badge/Lumen-10.x-blue.svg) ![PHP](https://img.shields.io/badge/PHP-8.2-blue.svg) ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-Laravel Lumen is a stunningly fast PHP micro-framework for building web applications with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Lumen attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as routing, database abstraction, queueing, and caching.
+Menu dan Role Management API Template adalah layanan API berbasis Lumen
 
-> **Note:** In the years since releasing Lumen, PHP has made a variety of wonderful performance improvements. For this reason, along with the availability of [Laravel Octane](https://laravel.com/docs/octane), we no longer recommend that you begin new projects with Lumen. Instead, we recommend always beginning new projects with [Laravel](https://laravel.com).
+## 🚀 Fitur Utama
 
-## Official Documentation
+-   Autentikasi menggunakan **JWT dan LDAP**
+-   Manajemen stok barang (**users**, **menus**, **roles**, dll.)
+-   Pengolahan data dengan **Guzzle** dan **Excel Export**
+-   Pengelolaan peran dan izin menggunakan **Spatie Permission**
 
-Documentation for the framework can be found on the [Lumen website](https://lumen.laravel.com/docs).
+---
 
-## Contributing
+## 📌 Persyaratan Minimum
 
-Thank you for considering contributing to Lumen! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+-   **PHP 8.1.0**
+-   **Lumen 10.0.4**
+-   **Composer**
+-   **MySQL / PostgreSQL / Oracle (PDO OCI enabled)**
+-   **Redis (Opsional untuk caching)**
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Lumen, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+## 🔧 Instalasi
 
-## License
+1. Clone repository:
+    ```sh
+    git clone https://github.com/4fri/admin-dashboard-BE.git
+    cd admin-template
+    ```
+2. Install dependensi:
+    ```sh
+    composer install
+    ```
+3. Copy file `.env.example` ke `.env` dan atur konfigurasi:
+    ```sh
+    cp .env.example .env
+    ```
+4. Generate application key:
+    ```sh
+    php artisan key:generate
+    ```
+5. Jalankan migrasi database:
+    ```sh
+    php artisan migrate --seed
+    ```
+6. Jalankan aplikasi:
+    ```sh
+    php artisan serve
+    ```
 
-The Lumen framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 🛠 Konfigurasi Lingkungan
+
+Pastikan `.env` diatur dengan benar, contoh:
+
+```env
+APP_NAME=SISI Inventory
+APP_ENV=local
+APP_DEBUG=true
+APP_KEY=
+APP_URL=http://localhost
+
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=db_name
+DB_USERNAME=db_username
+DB_PASSWORD=db_password
+
+CACHE_DRIVER=file
+QUEUE_CONNECTION=sync
+```
+
+---
+
+## 🔒 Keamanan
+
+-   Semua endpoint memerlukan **JWT Authentication**.
+-   Gunakan **role-based access control (RBAC)** dengan Spatie Permission.
+-   **Rate Limiting** dapat diterapkan dengan middleware.
+
+---
+
+## 📝 Lisensi
+
+SISI Inventory Backend menggunakan lisensi [MIT](https://opensource.org/licenses/MIT).
