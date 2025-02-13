@@ -7,5 +7,11 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    //
+    public function getSummaryCards()
+    {
+        return response()->json([
+            'success' => true,
+            'message' => 'tahap pengembangan',
+        ]);
+    }
 }
