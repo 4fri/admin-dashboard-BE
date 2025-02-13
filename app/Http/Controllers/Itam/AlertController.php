@@ -59,9 +59,7 @@ class AlertController extends Controller
 
         return response()->json([
             'success' => true,
-            'result' => [
-                'data' => $formattedData,
-            ]
+            'result' => $formattedData,
         ]);
     }
 }
