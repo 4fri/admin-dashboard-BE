@@ -22,17 +22,19 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
             foreach ($resources as $resource) {
                 if ($resource->name !== null) {
-                    $roleOrPermission = "role_or_permission:{$resource->name}";
+                    $roleOrPermission = [
+                        'middleware' => "role_or_permission:{$resource->name}",
+                        'uses' => "{$resource->controller}@{$resource->function}"
+                    ];
                 } else {
-                    $roleOrPermission = '';
+                    $roleOrPermission = [
+                        'uses' => "{$resource->controller}@{$resource->function}"
+                    ];
                 }
                 $method = strtolower($resource->method);
 
                 if (method_exists($router, $method)) {
-                    $router->{$method}("/{$resource->prefix}{$resource->url}", [
-                        'middleware' => $roleOrPermission,
-                        'uses' => "{$resource->controller}@{$resource->function}"
-                    ]);
+                    $router->{$method}("/{$resource->prefix}{$resource->url}", $roleOrPermission);
                 }
             }
         }
