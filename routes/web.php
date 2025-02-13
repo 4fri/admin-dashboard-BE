@@ -21,11 +21,16 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $resources = DB::table('routes')->get();
 
             foreach ($resources as $resource) {
+                if ($resource->name !== null) {
+                    $roleOrPermission = "role_or_permission:{$resource->name}";
+                } else {
+                    $roleOrPermission = '';
+                }
                 $method = strtolower($resource->method);
 
                 if (method_exists($router, $method)) {
                     $router->{$method}("/{$resource->prefix}{$resource->url}", [
-                        'middleware' => "role_or_permission:{$resource->name}",
+                        'middleware' => $roleOrPermission,
                         'uses' => "{$resource->controller}@{$resource->function}"
                     ]);
                 }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('routes', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name')->unique();
+            $table->string('name')->unique()->nullable()->default(null);
             $table->string('method');
             $table->string('prefix')->nullable();
             $table->string('url');

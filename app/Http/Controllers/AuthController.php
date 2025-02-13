@@ -21,8 +21,23 @@ class AuthController extends Controller
             ], 401);
         }
 
-        return $this->respondWithToken($token);
+        $user = Auth::user();
+
+        return response()->json([
+            'status' => true,
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 1500, // Default TTL dalam detik
+            'result' => [
+                'fullname' => $user->fullname,
+                'username' => $user->username,
+                'email' => $user->email,
+                'avatar_path' => $user->avatar_path,
+                'role' => $user->roles->pluck('name')
+            ]
+        ]);
     }
+
 
     public function logout()
     {
