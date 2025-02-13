@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Http\Request;
 
@@ -10,11 +11,34 @@ class RoleController extends Controller
 {
     public function index()
     {
-        $roles = Role::withCount('permissions')->paginate(10);
+        $roles = Role::with('permissions')
+            ->get()
+            ->map(function ($role) {
+                return [
+                    'id' => $role->id,
+                    'name' => $role->name,
+                    'permissions' => $role->permissions->map(function ($permission) {
+                        return [
+                            'id' => $permission->id,
+                            'name' => $permission->name,
+                        ];
+                    }),
+                ];
+            });
+
+        $permissions = Permission::get()->map(function ($permission) {
+            return [
+                'id' => $permission->id,
+                'name' => $permission->name,
+            ];
+        });
 
         return response()->json([
             'success' => true,
-            'result' => $roles
+            'result' => [
+                'roles' => $roles,
+                'permissions' => $permissions
+            ]
         ], 200);
     }
 
