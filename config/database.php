@@ -7,18 +7,24 @@ return [
     'default' => env('DB_CONNECTION', 'mysql'),
 
     'connections' => [
-        'ItamDB' => [
+        'itamDB' => [
             'driver' => 'mysql',
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'url' => env('DATABASE_URL'),
+            'host' => env('ITAM_DB_HOST', '127.0.0.1'),
+            'port' => env('ITAM_DB_PORT', '3306'),
+            'database' => env('ITAM_DB_DATABASE', 'forge'),
+            'username' => env('ITAM_DB_USERNAME', 'forge'),
+            'password' => env('ITAM_DB_PASSWORD', ''),
+            'unix_socket' => env('ITAM_DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
+            'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
         ],
 
         'pgsqlSelf' => [

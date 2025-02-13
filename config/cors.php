@@ -2,6 +2,6 @@
 
 return [
     'allowed_origins' =>  [
-        env('APP_FRONT_END')
+        env('APP_FRONT_END_URL')
     ]
 ];
