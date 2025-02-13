@@ -41,6 +41,8 @@ class RouteSeeder extends Seeder
             ['name' => 'routes.show', 'method' => 'GET', 'prefix' => 'routes', 'url' => '/{id}/show', 'controller' => 'Admin\RouteController', 'function' => 'show'],
             ['name' => 'routes.update', 'method' => 'PUT', 'prefix' => 'routes', 'url' => '/{id}/update', 'controller' => 'Admin\RouteController', 'function' => 'update'],
             ['name' => 'routes.destroy', 'method' => 'DELETE', 'prefix' => 'routes', 'url' => '/{id}/destroy', 'controller' => 'Admin\RouteController', 'function' => 'destroy'],
+
+            ['name' => 'alerts.index', 'method' => 'GET', 'prefix' => 'alerts', 'url' => '/', 'controller' => 'Itam\AlertController', 'function' => 'index'],
         ];
 
 

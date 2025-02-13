@@ -35,6 +35,7 @@ class RolePermissionSeeder extends Seeder
             'routes.show',
             'routes.update',
             'routes.destroy',
+            'alerts.index',
         ];
 
         foreach ($permissions as $permission) {
@@ -45,6 +46,6 @@ class RolePermissionSeeder extends Seeder
         $userRole = Role::firstOrCreate(['name' => 'user']);
 
         $adminRole->givePermissionTo($permissions);
-        $userRole->givePermissionTo(['users.index']);
+        $userRole->givePermissionTo(['users.index', 'alerts.index']);
     }
 }
