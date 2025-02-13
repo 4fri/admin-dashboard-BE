@@ -44,7 +44,7 @@ class AlertController extends Controller
             ->orderBy('licenses.expiration_date', 'asc')
             ->paginate(10);
 
-        $formattedData = $licensesTable->map(function ($license) {
+        $formattedData = $licensesTable->through(function ($license) {
             return [
                 'company_name' => $license->Companies__name,
                 'license_name' => $license->name,
@@ -61,14 +61,6 @@ class AlertController extends Controller
             'success' => true,
             'result' => [
                 'data' => $formattedData,
-                'pagination' => [
-                    'current_page' => $licensesTable->currentPage(),
-                    'last_page' => $licensesTable->lastPage(),
-                    'per_page' => $licensesTable->perPage(),
-                    'total' => $licensesTable->total(),
-                    'next_page_url' => $licensesTable->nextPageUrl(),
-                    'prev_page_url' => $licensesTable->previousPageUrl(),
-                ],
             ]
         ]);
     }
