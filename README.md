@@ -1,6 +1,6 @@
 # Menu dan Role Management API Template
 
-![Lumen](https://img.shields.io/badge/Lumen-10.x-blue.svg) ![PHP](https://img.shields.io/badge/PHP-8.2-blue.svg) ![License](https://img.shields.io/badge/License-MIT-green.svg)
+![Lumen](https://img.shields.io/badge/Lumen-10.x-blue.svg) ![PHP](https://img.shields.io/badge/PHP-8.1-blue.svg) ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
 Menu dan Role Management API Template adalah layanan API berbasis Lumen
 
