@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function getSummaryCards()
+    public function countSummaryCards()
     {
         $customers = [
             'customer_count' => Contract::whereNull('deleted_at')
@@ -51,6 +51,36 @@ class DashboardController extends Controller
         return response()->json([
             'success' => true,
             'result' => $data
+        ]);
+    }
+
+    public function getSummaryCards(Request $request)
+    {
+        switch ($request->type) {
+            case 'customer':
+                $data = Contract::whereNull('deleted_at')
+                    ->get();
+                break;
+            case 'asset':
+                $data = Asset::whereNull('deleted_at')
+                    ->get();
+                break;
+            case 'license':
+                $data = License::whereNull('deleted_at')
+                    ->get();
+                break;
+            case 'contract':
+                $data = ContractVendor::whereNull('deleted_at')
+                    ->get();
+                break;
+            default:
+                $data = [];
+        }
+
+        return response()->json([
+            'success' => true,
+            'type' => $request->type,
+            'result' => $data,
         ]);
     }
 }
