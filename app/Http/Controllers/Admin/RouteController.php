@@ -37,13 +37,14 @@ class RouteController extends Controller
     public function store(Request $request)
     {
         $validated = $this->validate($request, [
-            'name' => 'required|string|unique:routes,name',
+            'name' => 'nullable|string|unique:routes,name',
             'method' => 'required|string',
             'prefix' => 'nullable|string',
             'url' => 'required|string',
             'controller' => 'required|string',
             'function' => 'required|string',
         ]);
+        dd($validated);
 
         $parsData = [
             'name' => $validated['name'],
@@ -57,9 +58,11 @@ class RouteController extends Controller
         try {
             $route = RouteModel::create($parsData);
 
-            $permission = Permission::create([
-                'name' => $route->name,
-            ]);
+            if (!empty($validated['name'])) {
+                $permission = Permission::create([
+                    'name' => $route->name,
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
@@ -96,7 +99,6 @@ class RouteController extends Controller
     public function update(Request $request, $id)
     {
         $route = RouteModel::find($id);
-        $permission = Permission::where('name', $route->name)->first();
 
         if (!$route) {
             return response()->json([
@@ -106,7 +108,7 @@ class RouteController extends Controller
         }
 
         $validated = $this->validate($request, [
-            'name' => 'required|string|unique:routes,name,' . $id,
+            'name' => 'nullable|string|unique:routes,name,' . $id,
             'method' => 'required|string',
             'prefix' => 'nullable|string',
             'url' => 'required|string',
@@ -124,11 +126,16 @@ class RouteController extends Controller
         ];
 
         try {
-            $route->update($parsData);
+            if (!empty($validated['name'])) {
+                Permission::updateOrCreate(
+                    ['name' => $route->name],
+                    ['name' => $validated['name']]
+                );
+            } else {
+                Permission::where('name', $route->name)->delete();
+            }
 
-            $permission->update([
-                'name' => $route->name,
-            ]);
+            $route->update($parsData);
 
             return response()->json([
                 'success' => true,
@@ -139,9 +146,11 @@ class RouteController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Route update failed',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
+
 
     // Delete route
     public function destroy($id)
