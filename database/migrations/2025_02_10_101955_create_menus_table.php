@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary(); // Primary key sudah otomatis unique
             $table->string('name');
             $table->string('icon', 100)->nullable();
-            $table->string('route_name')->nullable();
+            $table->uuid('route_id')->nullable();
             $table->uuid('parent_id')->nullable();
             $table->unsignedInteger('sort_order')->nullable();
             $table->timestamps();
@@ -23,6 +23,11 @@ return new class extends Migration
 
         // Tambahkan foreign key setelah tabel dibuat
         Schema::table('menus', function (Blueprint $table) {
+            $table->foreign('route_id')
+                ->references('id')
+                ->on('routes')
+                ->onDelete('cascade');
+
             $table->foreign('parent_id')
                 ->references('id')
                 ->on('menus')
