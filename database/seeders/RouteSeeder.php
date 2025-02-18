@@ -42,6 +42,14 @@ class RouteSeeder extends Seeder
             ['name' => 'routes.update', 'method' => 'PUT', 'prefix' => 'routes', 'url' => '/{id}/update', 'controller' => 'Admin\RouteController', 'function' => 'update'],
             ['name' => 'routes.destroy', 'method' => 'DELETE', 'prefix' => 'routes', 'url' => '/{id}/destroy', 'controller' => 'Admin\RouteController', 'function' => 'destroy'],
 
+            // Menus
+            ['name' => 'menus.index', 'method' => 'GET', 'prefix' => 'menus', 'url' => '/', 'controller' => 'Admin\MenuController', 'function' => 'index'],
+            ['name' => 'menus.store', 'method' => 'POST', 'prefix' => 'menus', 'url' => '/store', 'controller' => 'Admin\MenuController', 'function' => 'store'],
+            ['name' => 'menus.show', 'method' => 'GET', 'prefix' => 'menus', 'url' => '/{id}/show', 'controller' => 'Admin\MenuController', 'function' => 'show'],
+            ['name' => 'menus.update', 'method' => 'PUT', 'prefix' => 'menus', 'url' => '/{id}/update', 'controller' => 'Admin\MenuController', 'function' => 'update'],
+            ['name' => 'menus.destroy', 'method' => 'DELETE', 'prefix' => 'menus', 'url' => '/{id}/destroy', 'controller' => 'Admin\MenuController', 'function' => 'destroy'],
+            ['name' => 'menus.children', 'method' => 'GET', 'prefix' => 'menus', 'url' => '/children', 'controller' => 'Admin\MenuController', 'function' => 'getMenuChildren'],
+
             ['name' => 'alerts.index', 'method' => 'GET', 'prefix' => 'alerts', 'url' => '/', 'controller' => 'Itam\AlertController', 'function' => 'index'],
             ['name' => null, 'method' => 'GET', 'prefix' => 'dashboard', 'url' => '/count-summary-cards', 'controller' => 'Itam\DashboardController', 'function' => 'countSummaryCards'],
             ['name' => null, 'method' => 'GET', 'prefix' => 'dashboard', 'url' => '/get-summary-cards', 'controller' => 'Itam\DashboardController', 'function' => 'getSummaryCards'],

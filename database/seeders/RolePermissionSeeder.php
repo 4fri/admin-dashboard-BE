@@ -35,6 +35,12 @@ class RolePermissionSeeder extends Seeder
             'routes.show',
             'routes.update',
             'routes.destroy',
+            'menus.index',
+            'menus.store',
+            'menus.show',
+            'menus.update',
+            'menus.destroy',
+            'menus.children',
             'alerts.index',
         ];
 
