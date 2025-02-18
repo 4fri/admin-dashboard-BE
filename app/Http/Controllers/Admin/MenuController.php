@@ -46,8 +46,8 @@ class MenuController extends Controller
         $menus = Menu::with(['children.route'])
             ->whereNull('parent_id')
             ->orderBy('sort_order', 'desc')
-            ->paginate(10)
-            ->through(function ($menu) {
+            ->get()
+            ->map(function ($menu) {
                 return [
                     'id' => $menu->id,
                     'name' => $menu->name,
