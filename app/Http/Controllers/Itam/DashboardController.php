@@ -59,19 +59,19 @@ class DashboardController extends Controller
         switch ($request->type) {
             case 'customer':
                 $data = Contract::whereNull('deleted_at')
-                    ->get();
+                    ->paginate(10);
                 break;
             case 'asset':
                 $data = Asset::whereNull('deleted_at')
-                    ->get();
+                    ->paginate(10);
                 break;
             case 'license':
                 $data = License::whereNull('deleted_at')
-                    ->get();
+                    ->paginate(10);
                 break;
             case 'contract':
                 $data = ContractVendor::whereNull('deleted_at')
-                    ->get();
+                    ->paginate(10);
                 break;
             default:
                 $data = [];
